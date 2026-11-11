@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Servo Workshop</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <div class="connect-wrapper">
+      <button id="connectBtn" class="styled-btn">
+        <span id="connectBtnText">CONNECT ARDUINO</span>
+      </button>
+      <div class="status-wrapper">
+        <span id="connectionBadge" class="connection-status">
+          <span class="status-dot"></span>
+          <span id="connectionText">Αποσυνδεδεμένο</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Title Section -->
+  <div class="page-header">
+    <h1 class="page-title">Servo Workshop</h1>
+    <p class="page-subtitle">Arduino + Servo Control</p>
+  </div>
+
+  <!-- Vertical Stack Container -->
+  <main class="main-container">
+
+    <!-- Card 1: Servo Wiring & Test -->
+    <section class="card">
+      <h2 class="card-title">1. Έλεγχος Καλωδίωσης (Pin 9)</h2>
+      <p class="card-desc">Μετακινήστε το slider για να ελέγξετε την κίνηση του servo.</p>
+
+      <div class="angle-display">
+        <span id="sliderAngleValue">90</span>°
+      </div>
+
+      <div class="slider-wrapper">
+        <div class="slider-labels">
+          <span>0°</span>
+          <span>90°</span>
+          <span>180°</span>
+        </div>
+        <input type="range" id="servoSlider" min="0" max="180" value="90">
+      </div>
+
+      <div class="wiring-container">
+        <h3 class="wiring-subheading">Καλωδίωση</h3>
+        <div class="servo-cable">
+          <div class="wire-row">
+            <span class="pin-name">Pin 9</span>
+            <div class="wire-rect wire-orange">
+              <span class="wire-label">Σήμα</span>
+            </div>
+          </div>
+          <div class="wire-row">
+            <span class="pin-name">5V</span>
+            <div class="wire-rect wire-red">
+              <span class="wire-label">Τροφοδοσία</span>
+            </div>
+          </div>
+          <div class="wire-row">
+            <span class="pin-name">GND</span>
+            <div class="wire-rect wire-brown">
+              <span class="wire-label">Γείωση</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 2: Autonomous Sweep -->
+    <section class="card">
+      <h2 class="card-title">2. Δοκιμή κώδικα</h2>
+      <p class="card-desc">Αντιγράψτε τον κώδικα στο Arduino IDE και δοκιμάστε τον.</p>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>Arduino Sketch (.ino)</span>
+        </div>
+        <pre class="code-block"><code id="code1Snippet"><span class="syn-kwd">#include</span> <span class="syn-str">&lt;Servo.h&gt;</span>
+
+<span class="syn-typ">Servo</span> myServo;
+
+<span class="syn-typ">void</span> <span class="syn-fn">setup</span>() {
+  myServo.<span class="syn-fn">attach</span>(<span class="syn-num">9</span>); <span class="syn-com">// Συνδέουμε το servo στο Pin 9</span>
+}
+
+<span class="syn-typ">void</span> <span class="syn-fn">loop</span>() {
+  myServo.<span class="syn-fn">write</span>(<span class="syn-num">45</span>);   <span class="syn-com">// Θέση 1</span>
+  <span class="syn-fn">delay</span>(<span class="syn-num">1000</span>);
+
+  myServo.<span class="syn-fn">write</span>(<span class="syn-num">135</span>);  <span class="syn-com">// Θέση 2</span>
+  <span class="syn-fn">delay</span>(<span class="syn-num">1000</span>);
+}</code></pre>
+      </div>
+
+      <div class="code-actions">
+        <div class="code-buttons-row">
+          <button id="copyCode1Btn" class="styled-btn small-btn">
+            <span class="copy-text">Copy</span>
+          </button>
+          <button class="styled-btn small-btn secondary flash-release-action">
+            Disconnect Arduino from Serial
+          </button>
+        </div>
+        <div class="flash-note">
+          <strong>Σημείωση:</strong> Καλό είναι να πατάτε αποδέσμευση πριν το Upload στο Arduino IDE, ώστε να μην μπλοκάρεται η σειριακή θύρα.
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 3: Serial Communication -->
+    <section class="card">
+      <h2 class="card-title">3. Σειριακός Έλεγχος (Serial Control)</h2>
+      <p class="card-desc">Κώδικας Arduino για ανάγνωση σειριακών εντολών από τον υπολογιστή και κίνηση στις αντίστοιχες θέσεις.</p>
+
+      <div class="code-container">
+        <div class="code-header">
+          <span>Arduino Sketch (.ino)</span>
+        </div>
+        <pre class="code-block"><code id="code2Snippet"><span class="syn-kwd">#include</span> <span class="syn-str">&lt;Servo.h&gt;</span>
+
+<span class="syn-typ">Servo</span> myServo;
+
+<span class="syn-typ">void</span> <span class="syn-fn">setup</span>() {
+  <span class="syn-typ">Serial</span>.<span class="syn-fn">begin</span>(<span class="syn-num">9600</span>);
+  myServo.<span class="syn-fn">attach</span>(<span class="syn-num">9</span>);
+  myServo.<span class="syn-fn">write</span>(<span class="syn-num">90</span>);   <span class="syn-com">// Αρχική θέση (κέντρο)</span>
+}
+
+<span class="syn-typ">void</span> <span class="syn-fn">loop</span>() {
+  <span class="syn-kwd">if</span> (<span class="syn-typ">Serial</span>.<span class="syn-fn">available</span>() &gt; <span class="syn-num">0</span>) {
+    <span class="syn-typ">char</span> command = <span class="syn-typ">Serial</span>.<span class="syn-fn">read</span>();
+
+    <span class="syn-kwd">if</span> (command == <span class="syn-str">'1'</span>) {
+      myServo.<span class="syn-fn">write</span>(<span class="syn-num">45</span>);  <span class="syn-com">// Θέση 1 (45°)</span>
+    } 
+    <span class="syn-kwd">else if</span> (command == <span class="syn-str">'2'</span>) {
+      myServo.<span class="syn-fn">write</span>(<span class="syn-num">135</span>); // Θέση 2 (135°)
+    }
+  }
+}</code></pre>
+      </div>
+
+      <div class="code-actions">
+        <div class="code-buttons-row">
+          <button id="copyCode2Btn" class="styled-btn small-btn">
+            <span class="copy-text">Copy</span>
+          </button>
+          <button class="styled-btn small-btn secondary flash-release-action">
+            Disconnect Arduino from Serial
+          </button>
+        </div>
+        <div class="flash-note">
+          <strong>Σημείωση:</strong> Καλό είναι να πατάτε αποδέσμευση πριν το Upload στο Arduino IDE, ώστε να μην μπλοκάρεται η σειριακή θύρα.
+        </div>
+      </div>
+
+      <div class="instructions-list">
+        <ol>
+          <li>Ανεβάστε τον κώδικα στο Arduino Leonardo μέσω του Arduino IDE.</li>
+          <li>Ανοίξτε το Serial Monitor (9600 baud) ή συνδεθείτε απευθείας από τη σελίδα.</li>
+          <li>Στείλτε '1' για 45° ή '2' για 135°.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Card 4: Web Serial Control -->
+    <section class="card">
+      <h2 class="card-title">4. Έλεγχος από την Ιστοσελίδα</h2>
+      <p class="card-desc">Αποστολή εντολών μέσω της σειριακής σύνδεσης.</p>
+
+      <div class="actions-row">
+        <button id="sendPos1Btn" class="styled-btn action-btn">Θέση 1</button>
+        <button id="sendPos2Btn" class="styled-btn action-btn">Θέση 2</button>
+      </div>
+
+      <div class="log-container">
+        <div class="log-header">
+          <span>Serial Monitor</span>
+          <button id="clearTerminalBtn" class="clear-btn">Καθαρισμός</button>
+        </div>
+        <div id="terminalLogs" class="log-content">
+          <div class="log-entry system">Έτοιμο. Συνδέστε το Arduino.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Instructions Link Matching Heron Sorter -->
+  <a href="https://github.com/Gabkion/heron-sorter#readme" target="_blank" class="instructions-btn">INSTRUCTIONS</a>
+
+  <!-- JavaScript Modules -->
+  <script src="serial.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
